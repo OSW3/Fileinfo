@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f0aee21544cf8a9cdefbe1b73c2ef5c4",
+    "content-hash": "5fa382995409ee1a3ff1a27423b5b3b9",
     "packages": [
         {
             "name": "osw3/xpl",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/OSW3/XPL.git",
-                "reference": "f8e9b89d17c55f77089c9317a84f7a75c9ad363f"
+                "reference": "66ef4142b873a7a22cb5be6e2d4a09e174e2179c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OSW3/XPL/zipball/f8e9b89d17c55f77089c9317a84f7a75c9ad363f",
-                "reference": "f8e9b89d17c55f77089c9317a84f7a75c9ad363f",
+                "url": "https://api.github.com/repos/OSW3/XPL/zipball/66ef4142b873a7a22cb5be6e2d4a09e174e2179c",
+                "reference": "66ef4142b873a7a22cb5be6e2d4a09e174e2179c",
                 "shasum": ""
             },
             "type": "library",
@@ -37,7 +37,7 @@
                 }
             ],
             "description": "Xtended PHP Library",
-            "time": "2019-09-10T22:07:19+00:00"
+            "time": "2019-09-10T23:21:53+00:00"
         }
     ],
     "packages-dev": [],
