@@ -1,0 +1,22 @@
+{
+    "name": "osw3/fileinfo",
+    "description": "Analyse and Extract file info",
+    "minimum-stability": "stable",
+    "require": {
+        "osw3/xpl": "*"
+    },
+    "authors": [
+        {
+            "name": "OSW3",
+            "email": "contact@osw3.net"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "OSW3": "src/"
+        },
+        "psr-4": {
+            "OSW3\\": "src/"
+        }
+    }
+}

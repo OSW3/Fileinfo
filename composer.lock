@@ -1,0 +1,51 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "f0aee21544cf8a9cdefbe1b73c2ef5c4",
+    "packages": [
+        {
+            "name": "osw3/xpl",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/OSW3/XPL.git",
+                "reference": "f8e9b89d17c55f77089c9317a84f7a75c9ad363f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/OSW3/XPL/zipball/f8e9b89d17c55f77089c9317a84f7a75c9ad363f",
+                "reference": "f8e9b89d17c55f77089c9317a84f7a75c9ad363f",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "xpl.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "OSW3",
+                    "email": "contact@osw3.net"
+                }
+            ],
+            "description": "Xtended PHP Library",
+            "time": "2019-09-10T22:07:19+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
