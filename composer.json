@@ -2,6 +2,7 @@
     "name": "osw3/fileinfo",
     "description": "Analyse and Extract file info",
     "minimum-stability": "stable",
+    "license": "MIT",
     "require": {
         "osw3/xpl": "^1.0"
     },
