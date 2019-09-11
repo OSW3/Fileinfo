@@ -113,11 +113,3 @@ $file = new Fileinfo('./files/StartupScreen.mp3');
 
 
 <h2>Audio</h2>
-
-<dl>
-    <dt><h3><code>Fileinfo::IMAGE_THUMBNAIL</code></h3></dt>
-    <dd>Image Thumbnail (if is available)</dd>
-    <dd><pre><?php print_r( $file->get(Fileinfo::IMAGE_THUMBNAIL) ) ?></pre></dd>
-    <hr>
-
-</dl>

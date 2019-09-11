@@ -669,7 +669,6 @@ class Fileinfo
             \finfo_close($finfo);
         }
 
-        // $this->description = \xtrim(",", $description);
         $this->description = $description;
 
         return $this;
