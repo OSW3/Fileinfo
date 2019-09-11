@@ -12,19 +12,22 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/OSW3/XPL.git",
-                "reference": "66ef4142b873a7a22cb5be6e2d4a09e174e2179c"
+                "reference": "09503c0d3cc4b654e6db7509f4ee494d58d97e98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OSW3/XPL/zipball/66ef4142b873a7a22cb5be6e2d4a09e174e2179c",
-                "reference": "66ef4142b873a7a22cb5be6e2d4a09e174e2179c",
+                "url": "https://api.github.com/repos/OSW3/XPL/zipball/09503c0d3cc4b654e6db7509f4ee494d58d97e98",
+                "reference": "09503c0d3cc4b654e6db7509f4ee494d58d97e98",
                 "shasum": ""
             },
             "type": "library",
             "autoload": {
                 "files": [
-                    "xpl.php"
-                ]
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "XPL\\": "src/classes/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -37,7 +40,7 @@
                 }
             ],
             "description": "Xtended PHP Library",
-            "time": "2019-09-10T23:21:53+00:00"
+            "time": "2019-09-11T14:07:12+00:00"
         }
     ],
     "packages-dev": [],

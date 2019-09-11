@@ -4,6 +4,35 @@ namespace OSW3;
 
 class Fileinfo
 {
+    const INFO_RELPATH              = 'relpath';
+    const INFO_ABSPATH              = 'abspath';
+    const INFO_BASENAME             = 'basename';
+    const INFO_FILENAME             = 'filename';
+    const INFO_EXTENSION            = 'extension';
+    const INFO_MIMETYPE             = "mimetype";
+    const INFO_MIMETYPE_EXTENSION   = "mimetypeExtension";
+    const INFO_FILETYPE             = "filetype";
+    const INFO_SIZE                 = "size";
+    const INFO_DESCRIPTION          = "description";
+
+    const CONTENT_HEADER            = "header";
+    const CONTENT_DATA              = "content";
+    const CONTENT_BASE64            = "base64";
+    const CONTENT_DATA64            = "data64";
+    const CONTENT_MD5               = "md5";
+    const CONTENT_SHA1              = "sha1";
+    const CONTENT_ROWS              = "rows";
+
+    const IMAGE_THUMBNAIL           = "thumbnail";
+    const IMAGE_WIDTH               = "width";
+    const IMAGE_HEIGHT              = "height";
+    const IMAGE_ORIENTATION         = "orientation";
+    const IMAGE_BITS                = "bits";
+    const IMAGE_CHANNELS            = "channels";
+    const IMAGE_EXIF                = "exif";
+
+    const AUDIO_ID3TAGS             = "id3Tags";
+
     const DATABASE_FILE = '/../resources/database.php';
 
     const TEMP_DIR = './temp/';
@@ -82,7 +111,13 @@ class Fileinfo
      * @var string
      */
     private $content;
-    private $fread;
+
+    /**
+     * Rows of content
+     *
+     * @var int
+     */
+    private $rows;
 
     /**
      * Hash MD5 of the content
@@ -152,6 +187,10 @@ class Fileinfo
     private $orientation;
 
     private $id3Tags;
+    
+    
+    // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
 
     public function __construct(string $source)
     {
@@ -168,34 +207,36 @@ class Fileinfo
 
         if ($this->isValidFile())
         {
-            $this
-                // File Info
-                ->setFilename()
-                ->setExtension()
-                ->setMimetype()
-                ->setMimetypeExtension()
-                ->setType()
-                ->setSize()
-                ->setDescription()
-                ->setStat()
+            // File Info
+            $this->setFilename();
+            $this->setExtension();
+            $this->setMimetype();
+            $this->setMimetypeExtension();
+            $this->setType();
+            $this->setSize();
+            $this->setDescription();
+            $this->setStat();
 
-                // File content
-                ->setHeader()
-                ->setContent()
-                // ->setFread()
-                ->setMd5()
-                ->setSha1()
-                ->setBase64()
-                
-                // Image
-                ->setThumbnail()
-                ->setExif()
-                ->setImageSizes()
-                ->setOrientation()
+            // File content;
+            $this->setHeader();
+            $this->setContent();
+            $this->setMd5();
+            $this->setSha1();
+            $this->setBase64();
+            
+            switch ($this->type)
+            {
+                case 'image':
+                $this->setThumbnail();
+                $this->setExif();
+                $this->setImageSizes();
+                $this->setOrientation();
+                break;
 
-                // Audio
-                ->setId3Tags()
-            ;
+                case 'audio':
+                $this->setId3Tags();
+                break;
+            }
         }
     }
 
@@ -207,72 +248,91 @@ class Fileinfo
         }
     }
 
-    public function info($name = null)
-    {
-        $info = array(
-            "source" => $this->source,
-            "base" => $this->base,
 
-            // File info
-            "filename"          => $this->filename,
-            "extension"         => $this->extension,
-            "mimetype"          => $this->mimetype,
-            "mimetypeExtension" => $this->mimetypeExtension,
-            "type"              => $this->type,
-            "size"              => $this->size,
-            "description"       => $this->description,
+    // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+    public function get($options = null)
+    {
+        $info = $this->info();
+        if (isset($info[$options])) return $info[$options];
+
+        $content = $this->content();
+        if (isset($content[$options])) return $content[$options];
+
+        $image = $this->image();
+        if (isset($image[$options])) return $image[$options];
+
+        return null;
+    }
+
+    public function info($options = null)
+    {
+        $data = array(
+            self::INFO_RELPATH          => $this->source,
+            self::INFO_ABSPATH          => $this->base,
+            self::INFO_BASENAME         => $this->basename,
+            self::INFO_FILENAME         => $this->filename,
+            self::INFO_EXTENSION        => $this->extension,
+            self::INFO_MIMETYPE         => $this->mimetype,
+            self::INFO_MIMETYPE_EXTENSION => $this->mimetypeExtension,
+            self::INFO_FILETYPE         => $this->type,
+            self::INFO_SIZE             => $this->size,
+            self::INFO_DESCRIPTION      => $this->description,
             // "stat"              => $this->stat,
         );
 
-        return $info;
-    }
-    public function content($name = null)
-    {
-        $data = array(
-            "header"    => $this->header,
-            "content"   => $this->content,
-            "fread"     => $this->fread,
-            "base64"    => $this->base64,
-            "data64"    => $this->data64,
-            "md5"       => $this->md5,
-            "sha1"      => $this->sha1,
-        );
-
-        return (isset($data[$name])) 
-            ? $data[$name] 
+        return (isset($data[$options])) 
+            ? $data[$options] 
             : $data;
     }
-    public function header()
-    {
-        return $this->header;
-    }
-    public function image($name = null)
+
+    public function content($options = null)
     {
         $data = array(
-            "thumbnail"     => $this->thumbnail,
-            "width"         => $this->width,
-            "height"        => $this->height,
-            "orientation"   => $this->orientation,
-            "bits"          => $this->bits,
-            "channels"      => $this->channels,
-            "exif"          => $this->exif,
+            self::CONTENT_HEADER        => $this->header,
+            self::CONTENT_DATA          => $this->content,
+            self::CONTENT_BASE64        => $this->base64,
+            self::CONTENT_DATA64        => $this->data64,
+            self::CONTENT_MD5           => $this->md5,
+            self::CONTENT_SHA1          => $this->sha1,
+            self::CONTENT_ROWS          => $this->rows,
         );
 
-        return (isset($data[$name])) 
-            ? $data[$name] 
+        return (isset($data[$options])) 
+            ? $data[$options] 
             : $data;
     }
-    public function audio($name = null)
+
+    public function image($options = null)
+    {
+        $data = array(
+            self::IMAGE_THUMBNAIL       => $this->thumbnail,
+            self::IMAGE_WIDTH           => $this->width,
+            self::IMAGE_HEIGHT          => $this->height,
+            self::IMAGE_ORIENTATION     => $this->orientation,
+            self::IMAGE_BITS            => $this->bits,
+            self::IMAGE_CHANNELS        => $this->channels,
+            self::IMAGE_EXIF            => $this->exif,
+        );
+
+        return (isset($data[$options])) 
+            ? $data[$options] 
+            : $data;
+    }
+
+    public function audio($options = null)
     {
         $data = array(
             "id3Tags"   => $this->id3Tags,
         );
 
-        return (isset($data[$name])) 
-            ? $data[$name] 
+        return (isset($data[$options])) 
+            ? $data[$options] 
             : $data;
     }
 
+    
+    // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 
     private function copyToLocalTemp()
@@ -301,7 +361,7 @@ class Fileinfo
         return $this;
     }
 
-    public function isValidFile()
+    private function isValidFile()
     {
         $filetype = \filetype( $this->base );
         $isFile = is_file( $this->base );
@@ -309,7 +369,7 @@ class Fileinfo
         return $filetype === 'file' && $isFile;
     }
 
-    public function getMimeDatabase($mimetype = null)
+    private function getMimeDatabase($mimetype = null)
     {
         if (isset($this->mimeDatabase[$mimetype]))
         {
@@ -319,11 +379,21 @@ class Fileinfo
         return $this->mimeDatabase;
     }
 
+    public function boundary()
+    {
+        $x = "==========";
+
+        return $x.\md5(\uniqid()).$x;
+    }
+
+    
+    // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
 
     /**
      * Base to proceed to parsing
      */
-    public function getBase()
+    private function getBase()
     {
         return $this->base;
     }
@@ -338,11 +408,11 @@ class Fileinfo
     /**
      * Get the value of basename
      */ 
-    public function getBasename()
+    private function getBasename()
     {
         return $this->basename;
     }
-    public function setBasename(string $file)
+    private function setBasename(string $file)
     {
         $this->basename = \pathinfo($file, PATHINFO_BASENAME);
 
@@ -354,7 +424,7 @@ class Fileinfo
      * 
      * The name of file before the extension
      */
-    public function getFilename()
+    private function getFilename()
     {
         return $this->filename;
     }
@@ -370,7 +440,7 @@ class Fileinfo
      * 
      * The file extension
      */
-    public function getExtension()
+    private function getExtension()
     {
         return $this->extension;
     }
@@ -384,7 +454,7 @@ class Fileinfo
     /**
      * File content MimeType
      */
-    public function getMimetype()
+    private function getMimetype()
     {
         return $this->mimetype;
     }
@@ -398,11 +468,11 @@ class Fileinfo
     /**
      * Extension provide by MimeType
      */ 
-    public function getMimetypeExtension()
+    private function getMimetypeExtension()
     {
         return $this->mimetypeExtension;
     }
-    public function setMimetypeExtension()
+    private function setMimetypeExtension()
     {
         $this->mimetypeExtension = $this->getMimeDatabase( $this->mimetype );
 
@@ -412,11 +482,11 @@ class Fileinfo
     /**
      * Media Type
      */
-    public function getType()
+    private function getType()
     {
         return $this->type;
     }
-    public function setType()
+    private function setType()
     {
         $type = explode("/", $this->mimetype);
         $this->type = $type[0];
@@ -427,7 +497,7 @@ class Fileinfo
     /**
      * File Stat
      */
-    public function getStat()
+    private function getStat()
     {
         return $this->stat;
     }
@@ -453,11 +523,11 @@ class Fileinfo
     /**
      * File size
      */ 
-    public function getSize()
+    private function getSize()
     {
         return $this->size;
     }
-    public function setSize()
+    private function setSize()
     {
         $this->size = \filesize( $this->base );
 
@@ -467,18 +537,38 @@ class Fileinfo
     /**
      * Get file header
      */ 
-    public function getHeader()
+    private function getHeader()
     {
         return $this->header;
     }
-    public function setHeader()
+    private function setHeader()
     {
+        $boundary = $this->boundary();
+
         $file = file($this->base);
+
         $header = $file[0];
-
         $header = explode("\n", $header);
+        $header = preg_replace('/[\x00-\x1F\x7F-\xFF]/', $boundary, $header[0]);
+        $header = explode($boundary, $header);
 
-        $this->header = $header[0];
+        foreach ($header as $key => $value) 
+        {
+            if (empty(trim($value)))
+            {
+                unset($header[$key]);
+            }
+            else 
+            {
+                $header[$key] = trim($value);
+            }
+        }
+
+        $header = implode(' ', $header);
+
+        $this->header = $header;
+
+        $this->setRows( count($file) );
 
         return $this;
     }
@@ -486,29 +576,32 @@ class Fileinfo
     /**
      * File content
      */
-    public function getContent()
+    private function getContent()
     {
         return $this->content;
     }
-    public function setContent()
+    private function setContent()
     {
+
+        // $handle = fopen($this->base, 'r');
+        // $this->content = fread($handle, filesize($this->base) );
+        // fclose($handle);
+
         $this->content = \file_get_contents( $this->base );
 
         return $this;
     }
 
     /**
-     * File content
-     */
-    public function getFread()
+     * Rows of content
+     */ 
+    public function getRows()
     {
-        return $this->fread;
+        return $this->rows;
     }
-    private function setFread()
+    public function setRows(int $rows)
     {
-        $handle = fopen($this->base, 'r');
-        $this->fread = fread($handle, filesize($this->base) );
-        fclose($handle);
+        $this->rows = $rows;
 
         return $this;
     }
@@ -516,11 +609,11 @@ class Fileinfo
     /**
      * Hash MD5 of the content
      */
-    public function getMd5()
+    private function getMd5()
     {
         return $this->md5;
     }
-    public function setMd5()
+    private function setMd5()
     {
         $this->md5 = \md5( $this->content );
 
@@ -530,11 +623,11 @@ class Fileinfo
     /**
      * Hash SHA1 of the content
      */
-    public function getSha1()
+    private function getSha1()
     {
         return $this->sha1;
     }
-    public function setSha1()
+    private function setSha1()
     {
         $this->sha1 = \sha1( $this->content );
 
@@ -544,15 +637,15 @@ class Fileinfo
     /**
      * Base62 of the content
      */
-    public function getBase64()
+    private function getBase64()
     {
         return $this->base64;
     }
-    public function getData64()
+    private function getData64()
     {
         return $this->data64;
     }
-    public function setBase64()
+    private function setBase64()
     {
         $this->base64 = base64_encode( $this->content );
         $this->data64 = "data:".$this->mimetype.";base64,".$this->base64;
@@ -563,7 +656,7 @@ class Fileinfo
     /**
      * File description
      */
-    public function getDescription()
+    private function getDescription()
     {
         return $this->description;
     }
@@ -576,7 +669,8 @@ class Fileinfo
             \finfo_close($finfo);
         }
 
-        $this->description = \xtrim(",", $description);
+        // $this->description = \xtrim(",", $description);
+        $this->description = $description;
 
         return $this;
     }
@@ -584,11 +678,11 @@ class Fileinfo
     /**
      * Image Thumbnail
      */
-    public function getThumbnail()
+    private function getThumbnail()
     {
         return $this->thumbnail;
     }
-    public function setThumbnail()
+    private function setThumbnail()
     {
         if ($this->type == "image")
         {
@@ -604,11 +698,11 @@ class Fileinfo
     /**
      * Image EXIF
      */
-    public function getExif()
+    private function getExif()
     {
         return $this->exif;
     }
-    public function setExif()
+    private function setExif()
     {
         // foreach (self::EXIF_IMAGETYPE as $imagetype) 
         // {
@@ -639,11 +733,11 @@ class Fileinfo
     /**
      * Image Sizes
      */ 
-    public function getImageSizes()
+    private function getImageSizes()
     {
         return $this->imageSizes;
     }
-    public function setImageSizes()
+    private function setImageSizes()
     {
         if (\function_exists('getimagesize') && $this->type == "image")
         {
@@ -661,11 +755,11 @@ class Fileinfo
     /**
      * Get the value of orientation
      */ 
-    public function getOrientation()
+    private function getOrientation()
     {
         return $this->orientation;
     }
-    public function setOrientation()
+    private function setOrientation()
     {
         if ($this->width > $this->height)
         {
@@ -688,7 +782,7 @@ class Fileinfo
     /**
      * ID3 Tags
      */
-    public function getId3Tags()
+    private function getId3Tags()
     {
         return $this->id3Tags;
     }
