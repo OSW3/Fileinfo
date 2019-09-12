@@ -12,6 +12,7 @@ class Fileinfo
     const INFO_MIMETYPE             = "mimetype";
     const INFO_MIMETYPE_EXTENSION   = "mimetypeExtension";
     const INFO_FILETYPE             = "filetype";
+    const INFO_TYPE                 = "type";
     const INFO_SIZE                 = "size";
     const INFO_DESCRIPTION          = "description";
 
@@ -89,7 +90,11 @@ class Fileinfo
      *
      * @var string
      */
-    private $type;
+    private $filetype;
+    // TODO: private $type;
+    // TODO: private $file;
+    // TODO: private $dir;
+    // TODO: private $link;
 
     /**
      * File size
@@ -212,10 +217,11 @@ class Fileinfo
             $this->setExtension();
             $this->setMimetype();
             $this->setMimetypeExtension();
-            $this->setType();
+            $this->setFiletype();
             $this->setSize();
             $this->setDescription();
             $this->setStat();
+            $this->setType();
 
             // File content;
             $this->setHeader();
@@ -275,7 +281,8 @@ class Fileinfo
             self::INFO_EXTENSION        => $this->extension,
             self::INFO_MIMETYPE         => $this->mimetype,
             self::INFO_MIMETYPE_EXTENSION => $this->mimetypeExtension,
-            self::INFO_FILETYPE         => $this->type,
+            self::INFO_FILETYPE         => $this->filetype,
+            self::INFO_TYPE             => $this->type,
             self::INFO_SIZE             => $this->size,
             self::INFO_DESCRIPTION      => $this->description,
             // "stat"              => $this->stat,
@@ -480,19 +487,33 @@ class Fileinfo
     }
 
     /**
-     * Media Type
+     * Media Filetype
      */
-    private function getType()
+    private function getFiletype()
     {
-        return $this->type;
+        return $this->filetype;
     }
-    private function setType()
+    private function setFiletype()
     {
-        $type = explode("/", $this->mimetype);
-        $this->type = $type[0];
+        $filetype = explode("/", $this->mimetype);
+        $this->filetype = $filetype[0];
 
         return $this;
     }
+
+    /**
+     * Get the value of type
+     */ 
+    // public function getType()
+    // {
+    //     return $this->type;
+    // }
+    // public function setType()
+    // {
+    //     $this->type = $type;
+
+    //     return $this;
+    // }
 
     /**
      * File Stat
@@ -742,10 +763,10 @@ class Fileinfo
         {
             $this->imageSizes = \getimagesize( $this->base );
     
-            $this->width = $this->imageSizes[0];
-            $this->height = $this->imageSizes[1];
-            $this->bits = $this->imageSizes['bits'];
-            $this->channels = $this->imageSizes['channels'];
+            $this->width    = isset($this->imageSizes[0])           ? $this->imageSizes[0] : null;
+            $this->height   = isset($this->imageSizes[1])           ? $this->imageSizes[1] : null;
+            $this->bits     = isset($this->imageSizes['bits'])      ? $this->imageSizes['bits'] : null;
+            $this->channels = isset($this->imageSizes['channels'])  ? $this->imageSizes['channels'] : null;
         }
 
         return $this;
